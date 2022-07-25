@@ -12,6 +12,7 @@ function App() {
   const [episodes, setEpisodes] = useState([]);
   const [filterByRating, setFilterByRating] = useState("");
 
+
   useEffect(() => {
     Adapter.getShows().then((shows) => setShows(shows));
   }, []);
@@ -30,17 +31,21 @@ function App() {
       : setFilterByRating(e.target.value);
   }
 
-  function selectShow(show) {
-    Adapter.getShowEpisodes(show.id).then((episodes) => {
-      setSelectedShow(show);
-      setEpisodes(episodes);
+  function selectShow(currShow) {
+    setSelectedShow(currShow);
+
+    Adapter.getShowEpisodes(currShow.show.id).then((episodesData) => {
+      setEpisodes(episodesData);
     });
+
   }
 
-  let displayShows = shows;
+  let displayShows = shows.filter((show) => 
+  show.name.toLowerCase().includes(searchTerm.toLowerCase()))
+
   if (filterByRating) {
     displayShows = displayShows.filter((s) => {
-      s.rating.average >= filterByRating;
+      return s.rating.average >= filterByRating;
     });
   }
 

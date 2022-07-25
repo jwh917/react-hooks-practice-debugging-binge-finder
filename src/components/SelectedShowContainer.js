@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Episode from "./Components/Episode";
+import Episode from "./Episode";
 
 function SelectedShowContainer(props) {
-  const selectedSeason = useState(1);
+  const [selectedSeason, setSelectedSeason] = useState(1);
 
   function mapSeasons() {
-    if (!!props.episodes) {
-      let seasons = props.episodes.map((e) => e.season).unique();
+    if (!!props.allEpisodes) {
+      let seasons = props.allEpisodes.map((e) => e.season).unique();
 
       return seasons.map((s) => {
         return (
@@ -17,17 +17,19 @@ function SelectedShowContainer(props) {
       });
     }
   }
+  
 
   function mapEpisodes() {
-    return props.episodes.map((e) => {
-      if (e.season == selectedSeason) {
+    return props.allEpisodes.map((e) => {
+      if (e.season === parseFloat(selectedSeason)) {
         return <Episode eachEpisode={e} key={e.id} />;
       }
     });
   }
 
   function handleSelectionChange(e) {
-    selectedSeason = e.target.value;
+    console.log(e)
+    setSelectedSeason(e.target.value)
   }
 
   const { selectedShow } = props;
@@ -35,11 +37,11 @@ function SelectedShowContainer(props) {
   return (
     <div style={{ position: "static" }}>
       <h2>{selectedShow.name}</h2>
-      <img src={selectedShow.image.medium} alt="" />
+      <img src={selectedShow.show.image.medium} alt="" />
       <p dangerouslySetInnerHTML={{ __html: selectedShow.summary }}></p>
-      <p>Premiered: {selectedShow.premiered}</p>
-      <p>Status: {selectedShow.status}</p>
-      <p>Average Rating: {selectedShow.rating.average}</p>
+      <p>Premiered: {selectedShow.show.premiered}</p>
+      <p>Status: {selectedShow.show.status}</p>
+      <p>Average Rating: {selectedShow.show.rating.average}</p>
       <select style={{ display: "block" }} onChange={handleSelectionChange}>
         {mapSeasons()}
       </select>
@@ -48,7 +50,7 @@ function SelectedShowContainer(props) {
   );
 }
 
-export SelectedShowContainer;
+export default SelectedShowContainer;
 
 Array.prototype.unique = function () {
   const arr = [];
